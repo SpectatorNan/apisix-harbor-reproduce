@@ -1,0 +1,9 @@
+dependencies:
+- name: etcd
+  repository: oci://harbor.example.com/bitnamicharts
+  version: 12.1.1
+- name: common
+  repository: oci://harbor.example.com/bitnamicharts
+  version: 2.31.8
+digest: sha256:dbf66a756eb2d09cd2df8f562e980d5793e87cca82dec8634a12b3883ac02e2a
+generated: "2025-11-01T19:14:33.408014+08:00"

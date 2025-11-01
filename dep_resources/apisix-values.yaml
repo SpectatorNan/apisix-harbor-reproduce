@@ -1,0 +1,50 @@
+
+global:
+  imagePullSecrets:
+    - harbor-cred
+# image:
+#   tag: 3.13.0-debian
+
+dataPlane:
+  hostNetwork: false
+
+  ingress:
+    apiVersion: v3
+  hostNetwork: true
+  dnsPolicy: ClusterFirstWithHostNet
+  nodeSelector:
+    kubernetes.io/hostname: master
+  tolerations:
+    - key: node-role.kubernetes.io/control-plane
+      operator: Exists
+      effect: NoSchedule
+  containerPorts:
+    http: 80
+    https: 443
+  containerSecurityContext:
+    privileged: true
+    runAsUser: 0
+    runAsGroup: 0
+    runAsNonRoot: false
+    readOnlyRootFilesystem: false
+    allowPrivilegeEscalation: true
+ 
+
+controlPlane:
+  apiTokenAdmin: "Rilaii2094lKkdla34lklasdfl"
+  dashboardEnabled: true
+  tls:
+    enabled: false
+  ingress:
+    apiVersion: v3
+ 
+
+ingressController:
+ 
+  ingressClass:
+    name: apisix
+  ingress:
+    apiVersion: v3
+
+
+ 

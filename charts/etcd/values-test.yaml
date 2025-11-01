@@ -1,0 +1,46 @@
+# etcd Helm Chart 测试配置
+# 使用本地 Harbor 镜像
+
+# 全局镜像仓库配置
+global:
+  imageRegistry: "reg.localharbor.com:443"
+  imagePullSecrets: []
+
+# etcd 镜像配置
+image:
+  registry: reg.localharbor.com:443
+  repository: bitnami/etcd
+  tag: "3.6.5"
+  pullPolicy: IfNotPresent
+  pullSecrets: []
+
+# 副本数配置（测试环境使用单副本）
+replicaCount: 1
+
+# 认证配置
+auth:
+  rbac:
+    create: false
+  token:
+    enabled: false
+
+# 持久化配置（测试环境禁用）
+persistence:
+  enabled: false
+
+# 资源限制（测试环境使用较小的资源）
+resources:
+  limits:
+    cpu: 500m
+    memory: 512Mi
+  requests:
+    cpu: 100m
+    memory: 128Mi
+
+# Service 配置
+service:
+  type: ClusterIP
+  port: 2379
+
+# 日志级别
+logLevel: info

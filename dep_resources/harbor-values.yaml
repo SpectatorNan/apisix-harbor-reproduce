@@ -1,0 +1,30 @@
+expose:
+  type: clusterIP
+  ingress:
+    # hosts:
+    #   core: harbor.mydomain.com
+    controller: default
+    className: apisix
+    annotations:
+      kubernetes.io/ingress.class: apisix
+      apisix.ingress.kubernetes.io/backend-protocol: "HTTPS"
+  tls:
+    enabled: false
+
+externalURL: https://harbor.example.com
+
+harborAdminPassword: "Harbor@12345"
+
+persistence:
+  persistentVolumeClaim:
+    registry:
+      size: 5Gi
+
+
+# 关闭不必要的组件（可选）
+notary:
+  enabled: false
+chartmuseum:
+  enabled: false
+trivy:
+  enabled: false

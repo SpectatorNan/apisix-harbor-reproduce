@@ -1,0 +1,47 @@
+# Copyright Broadcom, Inc. All Rights Reserved.
+# SPDX-License-Identifier: APACHE-2.0
+
+annotations:
+  images: |
+    - name: apisix
+      image: harbor.example.com/bitnami/apisix:v3.14.1
+    - name: apisix-ingress-controller
+      image: harbor.example.com/bitnami/apisix-ingress-controller:v1.8.4
+    - name: os-shell
+      image: harbor.example.com/bitnami/os-shell:v12.0.0
+  licenses: Apache-2.0
+  tanzuCategory: application
+apiVersion: v2
+appVersion: 3.13.0
+dependencies:
+- condition: etcd.enabled
+  name: etcd
+  repository: oci://harbor.example.com/bitnamicharts
+  version: 12.x.x
+- name: common
+  repository: oci://harbor.example.com/bitnamicharts
+  tags:
+  - bitnami-common
+  version: 2.x.x
+description: Apache APISIX is high-performance, real-time API Gateway. Features load
+  balancing, dynamic upstream, canary release, circuit breaking, authentication, observability,
+  amongst others.
+home: https://bitnami.com
+icon: https://dyltqmyl993wv.cloudfront.net/assets/stacks/apisix/img/apisix-stack-220x234.png
+keywords:
+- apisix
+- ingress
+- openresty
+- controller
+- http
+- web
+- www
+- reverse proxy
+maintainers:
+- name: Broadcom, Inc. All Rights Reserved.
+  url: https://github.com/bitnami/charts
+name: apisix
+sources:
+- https://github.com/bitnami/charts/tree/main/bitnami/apisix
+- https://github.com/bitnami/charts/tree/main/bitnami/apisix-ingress-controller
+version: 6.1.2
