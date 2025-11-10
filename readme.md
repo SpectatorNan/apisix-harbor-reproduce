@@ -175,7 +175,7 @@ vim config.env
 
 #### Step 1.2: Package Helm Charts
 
-Navigate to the charts directory and package the Helm charts:
+Navigate to the charts directory and package the Helm charts in the correct dependency order:
 
 ```bash
 cd build/helm
@@ -184,16 +184,26 @@ cd build/helm
 cp config.env.example config.env
 vim config.env
 
-# Package charts
-./package-chart.sh etcd
-./package-chart.sh apisix
+# Package charts in dependency order:
+# 1. common - base chart library (dependency for others)
 ./package-chart.sh common
 
-# Push to Harbor Chart Repository
+# 2. etcd - dependency chart for APISIX
+./package-chart.sh etcd
+
+# 3. apisix - depends on common and etcd charts
+./package-chart.sh apisix
+
+# Push to Harbor Chart Repository (in same order)
+./push-chart.sh common 1.0.0
 ./push-chart.sh etcd 3.5.0
 ./push-chart.sh apisix 2.0.0
-./push-chart.sh common 1.0.0
 ```
+
+**Important:** Always package charts in this order to ensure all dependencies are satisfied:
+1. `common` - Base chart library (no dependencies)
+2. `etcd` - Dependency chart (no standalone deployment needed)
+3. `apisix` - Main deployment (includes etcd as a dependency)
 
 ### Phase 2: Deploy Harbor on Kubernetes
 
@@ -280,7 +290,7 @@ kubectl get pods -n harbor
 # Default credentials: admin / Harbor12345
 ```
 
-### Phase 3: Deploy etcd and APISIX on Kubernetes
+### Phase 3: Deploy APISIX on Kubernetes
 
 #### Step 3.1: Add Harbor Chart Repository to Helm
 
@@ -290,22 +300,14 @@ helm repo add harbor-repo http://harbor.example.local/chartrepo/library
 helm repo update
 ```
 
-#### Step 3.2: Deploy etcd
-
-```bash
-# Deploy etcd using pre-configured values
-helm install etcd harbor-repo/etcd \
-  --namespace apisix \
-  --create-namespace \
-  -f dep_resources/harbor-values.yaml
-```
-
-#### Step 3.3: Deploy APISIX
+#### Step 3.2: Deploy APISIX (with etcd as dependency)
 
 ```bash
 # Deploy APISIX using pre-configured values
+# etcd will be automatically deployed as a dependency
 helm install apisix harbor-repo/apisix \
   --namespace apisix \
+  --create-namespace \
   -f dep_resources/apisix-values.yaml
 ```
 
@@ -314,15 +316,15 @@ Alternatively, deploy with custom values overrides:
 ```bash
 helm install apisix harbor-repo/apisix \
   --namespace apisix \
+  --create-namespace \
   -f dep_resources/apisix-values.yaml \
-  --set etcd.host=etcd \
   --set serviceType=NodePort
 ```
 
-#### Step 3.4: Verify APISIX and etcd Deployment
+#### Step 3.3: Verify APISIX and etcd Deployment
 
 ```bash
-# Check pod status
+# Check pod status - both APISIX and etcd pods should be running
 kubectl get pods -n apisix
 
 # Check services
